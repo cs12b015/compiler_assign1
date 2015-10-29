@@ -1,0 +1,21 @@
+
+sam friendof haldiram
+ramesh friendof ajay
+sam friendof ajay
+
+sania roommateof sam
+arjun roommateof sam
+prince roommateof samyek
+arjun roommateof krishna
+
+sania classmateof sam
+pawan classmateof pandu
+haldiram classmateof arjun
+abhi classmateof ash
+prince classmateof sam
+
+foreach $x classmateof arjun
+   if $x friendof sam
+     $x roommateof ramesh
+   endforeach
+endif

@@ -1,0 +1,29 @@
+graph
+{
+sam -- haldiram [label="friendof"]
+sania -- yogendra [label="friendof"]
+haldiram -- ajay [label="friendof"]
+ajay -- sam [label="friendof"]
+govinda -- salman [label="friendof"]
+sumedh -- suresh [label="friendof"]
+
+sania -- sam [label="roommateof"]
+ajay -- pandu [label="roommateof"]
+yash -- madhur [label="roommateof"]
+srikant -- sumedh [label="roommateof"]
+sam -- arjun [label="roommateof"]
+ramesh -- manoj [label="roommateof"]
+prince -- samyek [label="roommateof"]
+sania -- arjun [label="roommateof"]
+
+
+sania -- sam [label="classmateof"]
+pawan -- pandu [label="classmateof"]
+pandu -- madhur [label="classmateof"]
+haldiram -- arjun [label="classmateof"]
+manas -- jyoti [label="classmateof"]
+abhi -- ash [label="classmateof"]
+prince -- sam [label="classmateof"]
+pawan -- madhur[label="classmateof"]
+sania -- prince[label="classmateof"]
+}

@@ -1,0 +1,22 @@
+graph
+{
+
+pradip -- sachin [label="friendof"]
+ramesh -- ajay [label="friendof"]
+pradip -- ajay [label="friendof"]
+
+prashant -- pradip [label="roommateof"]
+arjun -- pradip [label="roommateof"]
+bahubali -- katappa [label="roommateof"]
+arjun -- krishna [label="roommateof"]
+prashant -- arjun [label="roommateof"]
+pradip -- krishna [label="roommateof"]
+prashant -- krishna [label="roommateof"]
+
+prashant -- pradip [label="classmateof"]
+pawan -- pandu [label="classmateof"]
+sachin -- arjun [label="classmateof"]
+abhi -- ash [label="classmateof"]
+bahubali -- pradip [label="classmateof"]
+prashant -- bahubali [label="classmateof"]
+}

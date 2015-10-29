@@ -1,0 +1,29 @@
+graph
+{
+pradip -- sachin [label="friendof"]
+prashant -- yogendra [label="friendof"]
+sachin -- ajay [label="friendof"]
+ajay -- pradip [label="friendof"]
+govinda -- salman [label="friendof"]
+mohan -- suresh [label="friendof"]
+
+prashant -- pradip [label="roommateof"]
+ajay -- pandu [label="roommateof"]
+yash -- madhur [label="roommateof"]
+srikant -- mohan [label="roommateof"]
+pradip -- arjun [label="roommateof"]
+ramesh -- manoj [label="roommateof"]
+bahubali -- katappa [label="roommateof"]
+prashant -- arjun [label="roommateof"]
+
+
+prashant -- pradip [label="classmateof"]
+pawan -- pandu [label="classmateof"]
+pandu -- madhur [label="classmateof"]
+sachin -- arjun [label="classmateof"]
+manas -- jyoti [label="classmateof"]
+abhi -- ash [label="classmateof"]
+bahubali -- pradip [label="classmateof"]
+pawan -- madhur[label="classmateof"]
+prashant -- bahubali[label="classmateof"]
+}
