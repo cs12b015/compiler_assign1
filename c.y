@@ -20,6 +20,7 @@
 
     void addtoarray(char *a,char *b,char *c);
     void checkclassmates();
+    void printfinaloutput();
 
 %}
 
@@ -40,39 +41,15 @@
 
 %%
 
-program       :        instructions{
-                        int len=11;
-                        len+=strlen($1);
-                        char* stringg=(char*)malloc((sizeof (char)* len)+1);
-                        sprintf(stringg,"graph\n{\n%s}\n",$1);
-                        $$ = strdup(stringg);
-                        //printf("%s",$$);
-                        
-                    };
+program       :        instructions
 
 
-instructions    :   instructions expression   { 
-                        int len=0;
-                        len+=strlen($1);
-                        len+=strlen($2);
-                        char* stringg=(char*)malloc((sizeof (char)* len)+1);
-                        sprintf(stringg,"%s%s",$1,$2);
-                        $$ = strdup(stringg);
-                    }
+instructions    :   instructions expression   
                 |   {$$ = "";}
                 ;
 
 expression   :   NAME RELATIONSHIP NAME {
-                        int len=16;
-                        len+=strlen($1);
-                        len+=strlen($2);
-                        len+=strlen($3);
-                        addtoarray($1,$2,$3);
-                        char* stringg=(char*)malloc((sizeof (char)* len)+1);
-                        sprintf(stringg,"%s -- %s [label=\"%s\"]\n",$1,$3,$2); 
-                        $$ = strdup(stringg);
-
-                        
+                        addtoarray($1,$2,$3);     
                     };
 
 
@@ -94,6 +71,28 @@ void addtoarray(char *a,char *b,char *c){
     	 classmatesize++;
     }
 }
+
+
+
+void printfinaloutput(){
+	int i;
+    printf("graph\n{\n");
+    for( i=0;i<friendsize;i++){
+        printf("%s -- %s [label=\"friendof\"]\n",friend1[i],friend2[i]);
+    }
+    printf("\n");
+    for( i=0;i<roommatesize;i++){
+        printf("%s -- %s [label=\"roommateof\"]\n",roommate1[i],roommate2[i]);
+    }
+     printf("\n");
+    for( i=0;i<classmatesize;i++){
+        printf("%s -- %s [label=\"classmateof\"]\n",classmate1[i],classmate2[i]);
+    }
+    printf("}\n");
+}
+
+
+
 
 void print_the_array(){
 	printf("friend1\n[");
@@ -219,9 +218,9 @@ int main(void) {
 
 
     yyparse();
-    print_the_array();
   	checkroommates();
     checkclassmates();
-    print_the_array();
+   //print_the_array();
+    printfinaloutput();
     return 0;
 }
