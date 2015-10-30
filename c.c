@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 void addtoarray(char *a,char *b,char *c){
 
     if(strcmp(b,"friendof")== 0){
@@ -47,4 +50,39 @@ void print_the_array(){
 		printf(" %s ",classmate2[i]);
 	}
 	printf("]\n");
+}
+
+
+void checkclassmates(){
+    int i,j;
+    for(i=0;i<classmatesize;i++){
+    	for(j=i;j<classmatesize;j++){
+    		if(strcmp(classmate1[i],classmate1[j])==0){
+    			strcpy(classmate1[classmatesize],classmate2[i]);
+    			strcpy(classmate2[classmatesize],classmate2[j]);
+    			classmatesize++;
+    		}else if(strcmp(classmate1[i],classmate2[j])==0){
+    			strcpy(classmate1[classmatesize],classmate2[i]);
+    			strcpy(classmate2[classmatesize],classmate1[j]);
+    			classmatesize++;
+    		}else if(strcmp(classmate2[i],classmate2[j])==0){
+    			strcpy(classmate1[classmatesize],classmate1[i]);
+    			strcpy(classmate2[classmatesize],classmate1[j]);
+    			classmatesize++;
+    		}else if(strcmp(classmate2[i],classmate1[j])==0){
+    			strcpy(classmate1[classmatesize],classmate1[i]);
+    			strcpy(classmate2[classmatesize],classmate2[j]);
+    			classmatesize++;
+    		}
+    	}
+    }
+}
+
+int main(){
+
+
+
+
+
+
 }

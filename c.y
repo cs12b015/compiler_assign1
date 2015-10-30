@@ -4,20 +4,22 @@
     #include <string.h>
 
 
+
     int errorbit=0;
     int yylex(void);
     void yyerror(char *);
     int roommatesize=0;
     int friendsize=0;
     int classmatesize=0;
-    char roommate1[1000][1000];
-    char roommate2[1000][1000];
-    char classmate1[1000][1000];
-    char classmate2[1000][1000];
-    char friend1[1000][1000];
-    char friend2[1000][1000];
+    char **roommate1;
+    char **roommate2;
+    char **classmate1;
+    char **classmate2;
+    char **friend1;
+    char **friend2;
 
     void addtoarray(char *a,char *b,char *c);
+    void checkclassmates();
 
 %}
 
@@ -127,9 +129,62 @@ void print_the_array(){
 	printf("]\n");
 }
 
-void rearrange_the_arrays(){
+void checkclassmates(){
+    int i,j;
+    int tempclassmatesize=classmatesize;
+    for(i=0;i<tempclassmatesize;i++){
+        for(j=i;j<tempclassmatesize;j++){
+	        if(i==j){}
+	        else{
+	            if(strcmp(classmate1[i],classmate1[j])==0){
+	                strcpy(classmate1[classmatesize],classmate2[i]);
+	                strcpy(classmate2[classmatesize],classmate2[j]);
+	                classmatesize++;
+	            }else if(strcmp(classmate1[i],classmate2[j])==0){
+	               strcpy(classmate1[classmatesize],classmate2[i]);
+	               strcpy(classmate2[classmatesize],classmate1[j]);
+	                classmatesize++;                
+	            }else if(strcmp(classmate2[i],classmate2[j])==0){
+	                strcpy(classmate1[classmatesize],classmate1[i]);
+	                strcpy(classmate2[classmatesize],classmate1[j]);
+	                classmatesize++;
+	            }else if(strcmp(classmate2[i],classmate1[j])==0){
+	                strcpy(classmate1[classmatesize],classmate1[i]);
+	                strcpy(classmate2[classmatesize],classmate2[j]);
+	                classmatesize++;
+	            }
+	        }	       
+        }
+    }
+}
 
-
+void checkroommates(){
+    int i,j;
+    int temproommatesize=roommatesize;
+    for(i=0;i<temproommatesize;i++){
+        for(j=i;j<temproommatesize;j++){
+	        if(i==j){}
+	        else{
+	            if(strcmp(roommate1[i],roommate1[j])==0){
+	                strcpy(roommate1[roommatesize],roommate2[i]);
+	                strcpy(roommate2[roommatesize],roommate2[j]);
+	                roommatesize++;
+	            }else if(strcmp(roommate1[i],roommate2[j])==0){
+	               strcpy(roommate1[roommatesize],roommate2[i]);
+	               strcpy(roommate2[roommatesize],roommate1[j]);
+	                roommatesize++;                
+	            }else if(strcmp(roommate2[i],roommate2[j])==0){
+	                strcpy(roommate1[roommatesize],roommate1[i]);
+	                strcpy(roommate2[roommatesize],roommate1[j]);
+	                roommatesize++;
+	            }else if(strcmp(roommate2[i],roommate1[j])==0){
+	                strcpy(roommate1[roommatesize],roommate1[i]);
+	                strcpy(roommate2[roommatesize],roommate2[j]);
+	                roommatesize++;
+	            }
+	        }	       
+        }
+    }
 }
 
 void yyerror(char *s) {
@@ -137,7 +192,36 @@ void yyerror(char *s) {
 }
 
 int main(void) {
+    int i;
+    roommate1 = malloc(1000 * sizeof(char*));
+    for ( i = 0; i < 1000 ; i++)
+    roommate1[i] = malloc((1000) * sizeof(char));
+
+    roommate2 = malloc(1000 * sizeof(char*));
+    for ( i = 0; i < 1000 ; i++)
+    roommate2[i] = malloc((1000) * sizeof(char));
+
+    friend1 = malloc(1000 * sizeof(char*));
+    for ( i = 0; i < 1000 ; i++)
+    friend1[i] = malloc((1000) * sizeof(char));
+
+    friend2 = malloc(1000 * sizeof(char*));
+    for ( i = 0; i < 1000 ; i++)
+    friend2[i] = malloc((1000) * sizeof(char));
+
+    classmate1 = malloc(1000 * sizeof(char*));
+    for ( i = 0; i < 1000 ; i++)
+    classmate1[i] = malloc((1000) * sizeof(char));
+
+    classmate2 = malloc(1000 * sizeof(char*));
+    for ( i = 0; i < 1000 ; i++)
+    classmate2[i] = malloc((1000) * sizeof(char));
+
+
     yyparse();
+    print_the_array();
+  	checkroommates();
+    checkclassmates();
     print_the_array();
     return 0;
 }
