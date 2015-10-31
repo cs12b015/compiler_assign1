@@ -21,6 +21,7 @@
     void addtoarray(char *a,char *b,char *c);
     void checkclassmates();
     void printfinaloutput();
+    int contains(char** array1 ,char** array2,int size,char* string1,char* string2);
 
 %}
 
@@ -36,21 +37,38 @@
 %token <strng> NAME
 %token <strng> VARIABLE 
 
-%type <strng> instructions expression program
+%type <strng> instructions expression program ifexpression forexpression condition instruction
 
 
 %%
 
-program       :        instructions
+program       	:        instructions
 
 
-instructions    :   instructions expression   
+instructions    :   instructions expression  
+				|   instructions ifexpression
+				|   instructions forexpression 
                 |   {$$ = "";}
                 ;
 
-expression   :   NAME RELATIONSHIP NAME {
+expression   	:   NAME RELATIONSHIP NAME {
                         addtoarray($1,$2,$3);     
                     };
+ifexpression  	:  IF condition instruction ENDIF
+
+
+forexpression  	:  FOREACH condition instruction ENDFOREACH
+
+condition		: 	NAME RELATIONSHIP NAME
+				|	NAME RELATIONSHIP VARIABLE
+				|	VARIABLE RELATIONSHIP NAME
+				;
+
+instruction 	:	NAME RELATIONSHIP NAME
+				|	NAME RELATIONSHIP VARIABLE
+				|	VARIABLE RELATIONSHIP NAME
+				;
+
 
 
 %%
@@ -73,8 +91,22 @@ void addtoarray(char *a,char *b,char *c){
 }
 
 
+int contains(char** array1 , char** array2 ,int size,char* string1,char* string2){
+    int returnflag=0;
+    int i;
+    for(i=0;i<size;i++){
+        if(  (strcmp(array1[i],string1)==0 && (strcmp(array2[i],string2)==0))  || (strcmp(array1[i],string2)==0 && (strcmp(array2[i],string1)==0)) ){
+            returnflag=1;
+        }
+    }
+    return returnflag;
+}
+
+
 
 void printfinaloutput(){
+	
+
 	int i;
     printf("graph\n{\n");
     for( i=0;i<friendsize;i++){
@@ -89,6 +121,8 @@ void printfinaloutput(){
         printf("%s -- %s [label=\"classmateof\"]\n",classmate1[i],classmate2[i]);
     }
     printf("}\n");
+
+   
 }
 
 
@@ -131,56 +165,75 @@ void print_the_array(){
 void checkclassmates(){
     int i,j;
     int tempclassmatesize=classmatesize;
-    for(i=0;i<tempclassmatesize;i++){
-        for(j=i;j<tempclassmatesize;j++){
-	        if(i==j){}
-	        else{
-	            if(strcmp(classmate1[i],classmate1[j])==0){
-	                strcpy(classmate1[classmatesize],classmate2[i]);
-	                strcpy(classmate2[classmatesize],classmate2[j]);
-	                classmatesize++;
-	            }else if(strcmp(classmate1[i],classmate2[j])==0){
-	               strcpy(classmate1[classmatesize],classmate2[i]);
-	               strcpy(classmate2[classmatesize],classmate1[j]);
-	                classmatesize++;                
-	            }else if(strcmp(classmate2[i],classmate2[j])==0){
-	                strcpy(classmate1[classmatesize],classmate1[i]);
-	                strcpy(classmate2[classmatesize],classmate1[j]);
-	                classmatesize++;
-	            }else if(strcmp(classmate2[i],classmate1[j])==0){
-	                strcpy(classmate1[classmatesize],classmate1[i]);
-	                strcpy(classmate2[classmatesize],classmate2[j]);
-	                classmatesize++;
-	            }
-	        }	       
+    for(i=0;i<classmatesize;i++){
+        for(j=i;j<classmatesize;j++){
+            if(i==j){}
+            else{
+                if(strcmp(classmate1[i],classmate1[j])==0){
+                    if(contains(classmate1,classmate2,classmatesize,classmate2[i],classmate2[j])==0 ){
+                        strcpy(classmate1[classmatesize],classmate2[i]);
+                        strcpy(classmate2[classmatesize],classmate2[j]);
+                        classmatesize++;
+                    }
+                }else if(strcmp(classmate1[i],classmate2[j])==0){
+                    if(contains(classmate1,classmate2,classmatesize,classmate2[i],classmate1[j])==0 ){
+                           strcpy(classmate1[classmatesize],classmate2[i]);
+                           strcpy(classmate2[classmatesize],classmate1[j]);
+                           classmatesize++;
+                    }                
+                }else if(strcmp(classmate2[i],classmate2[j])==0){
+                    if(contains(classmate1,classmate2,classmatesize,classmate1[i],classmate1[j])==0 ){
+                        strcpy(classmate1[classmatesize],classmate1[i]);
+                        strcpy(classmate2[classmatesize],classmate1[j]);
+                        classmatesize++;
+                    }
+                }else if(strcmp(classmate2[i],classmate1[j])==0){
+                    if(contains(classmate1,classmate2,classmatesize,classmate1[i],classmate2[j])==0 ){
+                        strcpy(classmate1[classmatesize],classmate1[i]);
+                        strcpy(classmate2[classmatesize],classmate2[j]);
+                        classmatesize++;
+                    }
+                }
+                //printf("%d: %s-----%s   ======>  %s------%s\n",classmatesize,classmate1[i],classmate2[i],classmate1[j],classmate2[j]);
+            }          
         }
     }
 }
 
+
 void checkroommates(){
     int i,j;
     int temproommatesize=roommatesize;
-    for(i=0;i<temproommatesize;i++){
-        for(j=i;j<temproommatesize;j++){
+    for(i=0;i<roommatesize;i++){
+        for(j=i;j<roommatesize;j++){
 	        if(i==j){}
 	        else{
 	            if(strcmp(roommate1[i],roommate1[j])==0){
-	                strcpy(roommate1[roommatesize],roommate2[i]);
-	                strcpy(roommate2[roommatesize],roommate2[j]);
-	                roommatesize++;
+	            	if(contains(roommate1,roommate2,roommatesize,roommate2[i],roommate2[j])==0 ){
+		                strcpy(roommate1[roommatesize],roommate2[i]);
+		                strcpy(roommate2[roommatesize],roommate2[j]);
+		                roommatesize++;
+		            }
 	            }else if(strcmp(roommate1[i],roommate2[j])==0){
-	               strcpy(roommate1[roommatesize],roommate2[i]);
-	               strcpy(roommate2[roommatesize],roommate1[j]);
-	                roommatesize++;                
+	            	if(contains(roommate1,roommate2,roommatesize,roommate2[i],roommate1[j])==0 ){
+		                strcpy(roommate1[roommatesize],roommate2[i]);
+		                strcpy(roommate2[roommatesize],roommate1[j]);
+		                roommatesize++;  
+		            }              
 	            }else if(strcmp(roommate2[i],roommate2[j])==0){
-	                strcpy(roommate1[roommatesize],roommate1[i]);
-	                strcpy(roommate2[roommatesize],roommate1[j]);
-	                roommatesize++;
+	            	if(contains(roommate1,roommate2,roommatesize,roommate1[i],roommate1[j])==0 ){
+		                strcpy(roommate1[roommatesize],roommate1[i]);
+		                strcpy(roommate2[roommatesize],roommate1[j]);
+		                roommatesize++;
+		            }
 	            }else if(strcmp(roommate2[i],roommate1[j])==0){
-	                strcpy(roommate1[roommatesize],roommate1[i]);
-	                strcpy(roommate2[roommatesize],roommate2[j]);
-	                roommatesize++;
+	            	if(contains(roommate1,roommate2,roommatesize,roommate1[i],roommate2[j])==0 ){
+		                strcpy(roommate1[roommatesize],roommate1[i]);
+		                strcpy(roommate2[roommatesize],roommate2[j]);
+		                roommatesize++;
+		            }
 	            }
+	        	//printf("%d: %s-----%s   ======>  %s------%s\n",roommatesize,roommate1[i],roommate2[i],roommate1[j],roommate2[j]);
 	        }	       
         }
     }
