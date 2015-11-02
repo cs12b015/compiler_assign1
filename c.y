@@ -55,6 +55,7 @@ instructions    :   instructions expression
 				|   instructions ifexpression
 				|   instructions forexpression 
                 |   instructions ifforexpression
+                |   instructions forifexpression
                 |   {$$ = "";}
                 ;
 
@@ -74,6 +75,38 @@ forexpression  	:   FOREACH NAME RELATIONSHIP VARIABLE instruction ENDFOREACH {e
 						int datasize = datalength;
 						dofor($2,data,datasize,array[0],array[1],array[2]);
 					}
+
+forifexpression :   FOREACH VARIABLE RELATIONSHIP NAME IF VARIABLE RELATIONSHIP NAME instruction ENDIF ENDFOREACH{
+                        int m,n;
+                        checkroommates();
+                        checkclassmates();
+                        char** array=split($9);
+                        char** fordata =getdata($2,$3,$4);
+                        int fordatasize = datalength;
+                        if(strcmp($2,$6)==0){
+                            char** ifdata =getdata($6,$7,$8);
+                            int ifdatasize = datalength;
+                            char** data;    int i;
+                            data = malloc(100 * sizeof(char*));
+                            for ( i = 0; i < 100 ; i++)
+                            data[i] = malloc((100) * sizeof(char)); 
+
+                            int datasize=0;
+                            for(m=0;m<fordatasize;m++){
+                                for(n=0;n<ifdatasize;n++){
+                                    if(strcmp(fordata[m],ifdata[n])==0){
+                                        strcpy(data[datasize],ifdata[n]);
+                                        datasize++;
+                                    }
+                                }
+                            }
+                            dofor($6,data,datasize,array[0],array[1],array[2]);
+                        }else{
+                            errorbit=1;
+                        }
+                    }
+
+
 
 ifforexpression :   IF NAME RELATIONSHIP NAME FOREACH VARIABLE RELATIONSHIP NAME instruction ENDFOREACH ENDIF {
                         int flag=0;
