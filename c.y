@@ -43,7 +43,7 @@
 %token <strng> NAME
 %token <strng> VARIABLE 
 
-%type <strng> instructions expression program ifexpression forexpression ifcondition instruction
+%type <strng> instructions expression program ifexpression forexpression instruction
 
 
 %%
@@ -54,31 +54,60 @@ program       	:        instructions
 instructions    :   instructions expression  
 				|   instructions ifexpression
 				|   instructions forexpression 
+                |   instructions ifforexpression
                 |   {$$ = "";}
                 ;
 
 expression   	:   NAME RELATIONSHIP NAME {
                         addtoarray($1,$2,$3);  
-                        checkroommates();
-    					checkclassmates(); 
-
                     };
-ifexpression  	:  IF ifcondition instruction ENDIF
-
+ifexpression  	:   IF NAME RELATIONSHIP NAME instruction ENDIF{}
+                |   IF NAME RELATIONSHIP VARIABLE instruction ENDIF{errorbit=1;}
+                |   IF VARIABLE RELATIONSHIP NAME instruction ENDIF{}
 
 forexpression  	:   FOREACH NAME RELATIONSHIP VARIABLE instruction ENDFOREACH {errorbit=1;}
 				|	FOREACH VARIABLE RELATIONSHIP NAME instruction ENDFOREACH {
+                        checkroommates();
+                        checkclassmates(); 
 						char** array=split($5);
 						char** data =getdata($2,$3,$4);
 						int datasize = datalength;
 						dofor($2,data,datasize,array[0],array[1],array[2]);
 					}
 
+ifforexpression :   IF NAME RELATIONSHIP NAME FOREACH VARIABLE RELATIONSHIP NAME instruction ENDFOREACH ENDIF {
+                        int flag=0;
+                        int i;
+                        checkroommates();
+                        checkclassmates();
+                        if(strcmp($3,"friendof")==0){
+                            for(i=0;i<friendsize;i++){
+                                if((strcmp($2,friend1[i])==0  && strcmp($4,friend2[i])==0 )  || strcmp($2,friend2[i])==0  && strcmp($4,friend1[i])==0){
+                                    flag=1;
+                                }
+                            }
+                        }else if(strcmp($3,"classmateof")==0){
+                            for(i=0;i<classmatesize;i++){
+                                if((strcmp($2,classmate1[i])==0  && strcmp($4,classmate2[i])==0 )  || strcmp($2,classmate2[i])==0  && strcmp($4,classmate1[i])==0){
+                                    flag=1;
+                                }
+                            }
+                        }else if(strcmp($3,"roommateof")==0){
+                            for(i=0;i<roommatesize;i++){
+                                if((strcmp($2,roommate1[i])==0  && strcmp($4,roommate2[i])==0 )  || strcmp($2,roommate2[i])==0  && strcmp($4,roommate1[i])==0){
+                                    flag=1;
+                                }
+                            }
+                        } 
+                        char** array=split($9);
+                        char** data =getdata($6,$7,$8);
+                        int datasize = datalength;
+                        if(flag==1){
+                            dofor($6,data,datasize,array[0],array[1],array[2]);
+                        }
+                }
 
-ifcondition		: 	NAME RELATIONSHIP NAME
-				|	NAME RELATIONSHIP VARIABLE
-				|	VARIABLE RELATIONSHIP NAME
-				;
+
 
 instruction 	:	VARIABLE RELATIONSHIP NAME{
 						int len=4; len+=strlen($1); len+=strlen($2); len+=strlen($3);
@@ -369,7 +398,8 @@ void checkroommates(){
 }
 
 void yyerror(char *s) {
-    fprintf(stderr, "%s\n", s);
+	errorbit=1;
+    //fprintf(stderr, "%s\n", s);
 }
 
 int main(void) {
